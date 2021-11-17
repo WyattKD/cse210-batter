@@ -1,3 +1,6 @@
+import os
+os.environ['RAYLIB_BIN_PATH'] = '.'
+
 import random
 from game import constants
 from game.director import Director
@@ -10,13 +13,13 @@ from game.physics_service import PhysicsService
 from game.audio_service import AudioService
 
 # TODO: Add imports similar to the following when you create these classes
-# from game.brick import Brick
-# from game.ball import Ball
-# from game.paddle import Paddle
-# from game.control_actors_action import ControlActorsAction
-# from game.handle_collisions_action import HandleCollisionsAction
-# from game.handle_off_screen_action import HandleOffScreenAction
-# from game.move_actors_action import MoveActorsAction
+from game.brick import Brick
+from game.ball import Ball
+from game.paddle import Paddle
+from game.control_actors_action import ControlActorsAction
+from game.handle_collisions_action import HandleCollisionsAction
+from game.handle_off_screen_action import HandleOffScreenAction
+from game.move_actors_action import MoveActorsAction
 
 def main():
 
@@ -24,12 +27,19 @@ def main():
     cast = {}
 
     cast["bricks"] = []
-    # TODO: Create bricks here and add them to the list
+    for y in range(8):
+        for x in range(16):
+            brick = Brick(50*x, 35*y)
+            if brick.is_alive():
+                cast["bricks"].append(brick)
 
     cast["balls"] = []
-    # TODO: Create a ball here and add it to the list
+    ball = Ball()
+    cast["balls"].append(ball)
 
     cast["paddle"] = []
+    paddle = Paddle()
+    cast["paddle"].append(paddle)
     # TODO: Create a paddle here and add it to the list
 
 
@@ -42,17 +52,21 @@ def main():
     audio_service = AudioService()
 
     draw_actors_action = DrawActorsAction(output_service)
+    move_actors_action = MoveActorsAction()
+    handle_off_screen_action = HandleOffScreenAction()
+    control_actors_action = ControlActorsAction(input_service)
+    handle_collisions_action = HandleCollisionsAction(physics_service)
 
     # TODO: Create additional actions here and add them to the script
 
-    script["input"] = []
-    script["update"] = []
+    script["input"] = [control_actors_action]
+    script["update"] = [move_actors_action, handle_collisions_action, handle_off_screen_action]
     script["output"] = [draw_actors_action]
 
 
 
     # Start the game
-    output_service.open_window("Batter");
+    output_service.open_window("Batter")
     audio_service.start_audio()
     audio_service.play_sound(constants.SOUND_START)
     
