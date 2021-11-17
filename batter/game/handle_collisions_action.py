@@ -43,7 +43,6 @@ class HandleCollisionsAction(Action):
                     n2 = -5
                 else:
                     n2 = 0
-                print(f"{n} and {n2}")
                 ball.set_velocity(Point(n, n2))
         if self._physics_service.is_collision(ball, paddle):
             x = ball.get_position().get_x() + constants.BALL_WIDTH/2
